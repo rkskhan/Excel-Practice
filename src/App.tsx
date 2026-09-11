@@ -4,6 +4,7 @@ import {
   DatasetSize,
   TableSheet,
   ChallengeQuestion,
+  PracticeTask,
 } from './types/excel';
 import {
   generateDataset,
@@ -11,12 +12,14 @@ import {
   copyToClipboardAsTsv,
   generateChallengeQuestions,
 } from './data/generators';
+import { generatePracticeTasks } from './data/tasks';
 import { TOPIC_TUTORIALS } from './data/tutorials';
 import { Navbar } from './components/Navbar';
 import { ControlPanel } from './components/ControlPanel';
 import { DataTable } from './components/DataTable';
 import { TutorialCard } from './components/TutorialCard';
 import { ChallengeSection } from './components/ChallengeSection';
+import { TaskSection } from './components/TaskSection';
 import { ShortcutsModal } from './components/ShortcutsModal';
 import { ImportGuideModal } from './components/ImportGuideModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
@@ -28,6 +31,10 @@ import {
   Trophy,
   TableProperties,
   ArrowRight,
+  CheckSquare,
+  ListTodo,
+  RefreshCw,
+  Dices,
 } from 'lucide-react';
 
 export default function App() {
@@ -42,13 +49,15 @@ export default function App() {
   const [secondarySheets, setSecondarySheets] = useState<TableSheet[]>([]);
   const [activeSheetId, setActiveSheetId] = useState<string>('');
   const [challenges, setChallenges] = useState<ChallengeQuestion[]>([]);
+  const [tasks, setTasks] = useState<PracticeTask[]>([]);
+  const [seed, setSeed] = useState<number>(() => Math.floor(Math.random() * 2147483640) + 1);
 
   // UI States
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isImportGuideOpen, setIsImportGuideOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'tutorial' | 'challenges'>('tutorial');
+  const [activeTab, setActiveTab] = useState<'tasks' | 'tutorial' | 'challenges'>('tasks');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // Add a toast notification helper
@@ -64,15 +73,19 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // Regenerate dataset logic
+  // Regenerate dataset and practice tasks dynamically with random seed on every refresh/call
   const handleGenerate = useCallback(() => {
     setIsGenerating(true);
 
     // Subtle async tick to provide smooth visual feedback
     setTimeout(() => {
+      const newSeed = Math.floor(Math.random() * 2147483640) + 1;
+      setSeed(newSeed);
+
       const dataset = generateDataset(topic, size, {
         includeBlanks,
         clearLookupTarget: topic === 'xlookup' ? clearLookupTarget : false,
+        seed: newSeed,
       });
 
       setPrimarySheet(dataset.primarySheet);
@@ -87,9 +100,37 @@ export default function App() {
       );
       setChallenges(newChallenges);
 
+      // Generate fresh randomized tasks tailored to this specific random batch
+      const newTasks = generatePracticeTasks(
+        topic,
+        dataset.primarySheet,
+        dataset.secondarySheets,
+        newSeed
+      );
+      setTasks(newTasks);
+
       setIsGenerating(false);
     }, 150);
   }, [topic, size, includeBlanks, clearLookupTarget]);
+
+  // Regenerate tasks only with a new random seed while keeping current dataset
+  const handleRandomizeTasksOnly = useCallback(() => {
+    if (!primarySheet) return;
+    const newSeed = Math.floor(Math.random() * 2147483640) + 1;
+    setSeed(newSeed);
+    const newTasks = generatePracticeTasks(
+      topic,
+      primarySheet,
+      secondarySheets,
+      newSeed
+    );
+    setTasks(newTasks);
+    addToast(
+      'info',
+      '🎲 New Practice Tasks Generated',
+      'Loaded brand new business goals, target formulas, and verification steps.'
+    );
+  }, [topic, primarySheet, secondarySheets, addToast]);
 
   // Regenerate on topic/size/option changes
   useEffect(() => {
@@ -204,16 +245,27 @@ export default function App() {
               <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
-              <div className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">
-                Current Mock Batch
+              <div className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex items-center gap-1.5">
+                <span>Current Random Batch</span>
+                <span className="font-mono text-emerald-400 text-[10px] bg-slate-900/80 px-1.5 py-0.5 rounded border border-slate-700">
+                  #{seed.toString(36).toUpperCase()}
+                </span>
               </div>
               <div className="text-sm font-bold text-white flex items-center gap-1.5">
                 <span>{primarySheet ? primarySheet.rows.length : 0} Rows</span>
                 <span className="text-xs text-slate-400 font-normal">
-                  ({secondarySheets.length > 0 ? `${secondarySheets.length + 1} Sheets` : 'Single Sheet'})
+                  • {tasks.length} Tasks
                 </span>
               </div>
             </div>
+            <button
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="ml-1 p-2 bg-slate-700 hover:bg-slate-600 active:scale-95 text-emerald-400 hover:text-emerald-300 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+              title="Generate new randomized data and practice tasks"
+            >
+              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
+            </button>
           </div>
         </div>
       </div>
@@ -240,6 +292,7 @@ export default function App() {
             activeSheet={currentSheet!}
             secondarySheets={secondarySheets}
             totalRows={currentSheet ? currentSheet.rows.length : 0}
+            seed={seed}
           />
         )}
 
@@ -256,14 +309,26 @@ export default function App() {
           />
         )}
 
-        {/* 3. Section Tabs: Tutorial Guide vs. Interactive Challenges */}
-        <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2">
-          <div className="flex items-center gap-2">
+        {/* 3. Section Tabs: Tasks vs Tutorial Guide vs. Interactive Challenges */}
+        <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2 flex-wrap gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={() => setActiveTab('tasks')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                activeTab === 'tasks'
+                  ? 'bg-emerald-700 text-white shadow-sm ring-1 ring-emerald-600'
+                  : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+              }`}
+            >
+              <CheckSquare className="w-4 h-4" />
+              <span>Practice Tasks & Missions ({tasks.length})</span>
+            </button>
+
             <button
               onClick={() => setActiveTab('tutorial')}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 activeTab === 'tutorial'
-                  ? 'bg-emerald-700 text-white shadow-sm'
+                  ? 'bg-emerald-700 text-white shadow-sm ring-1 ring-emerald-600'
                   : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
               }`}
             >
@@ -275,7 +340,7 @@ export default function App() {
               onClick={() => setActiveTab('challenges')}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 activeTab === 'challenges'
-                  ? 'bg-amber-600 text-white shadow-sm'
+                  ? 'bg-amber-600 text-white shadow-sm ring-1 ring-amber-500'
                   : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
               }`}
             >
@@ -289,7 +354,19 @@ export default function App() {
           </span>
         </div>
 
-        {/* Render Active View: Tutorial or Challenges */}
+        {/* Render Active View: Tasks, Tutorial or Challenges */}
+        {activeTab === 'tasks' && (
+          <TaskSection
+            topic={topic}
+            tasks={tasks}
+            onTasksChange={setTasks}
+            onRandomizeTasks={handleRandomizeTasksOnly}
+            onRegenerateAll={handleGenerate}
+            onCopyFormula={handleCopyFormula}
+            seed={seed}
+          />
+        )}
+
         {activeTab === 'tutorial' && currentTutorial && (
           <TutorialCard
             tutorial={currentTutorial}

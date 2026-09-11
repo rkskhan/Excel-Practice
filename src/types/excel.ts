@@ -63,3 +63,30 @@ export interface ChallengeQuestion {
   hint: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
 }
+
+export type TaskDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
+export type TaskStatus = 'todo' | 'in_progress' | 'completed';
+
+export interface TaskSubStep {
+  id: string;
+  text: string;
+  completed: boolean;
+  excelShortcutOrTip?: string;
+}
+
+export interface PracticeTask {
+  id: string;
+  topic: PracticeTopic;
+  title: string;
+  scenario: string;
+  difficulty: TaskDifficulty;
+  estimatedMinutes: number;
+  status: TaskStatus;
+  subSteps: TaskSubStep[];
+  targetFormula?: string;
+  ribbonPath?: string;
+  expectedResultDescription: string;
+  proTip?: string;
+  notes?: string;
+  isCustom?: boolean;
+}

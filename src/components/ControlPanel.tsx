@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   FileDown,
   Info,
+  Dices,
 } from 'lucide-react';
 
 interface ControlPanelProps {
@@ -37,6 +38,7 @@ interface ControlPanelProps {
   activeSheet: TableSheet;
   secondarySheets: TableSheet[];
   totalRows: number;
+  seed?: number;
 }
 
 interface TopicOption {
@@ -102,6 +104,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   activeSheet,
   secondarySheets,
   totalRows,
+  seed,
 }) => {
   const hasMultipleSheets = secondarySheets.length > 0;
 
@@ -277,20 +280,30 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       {/* 3. Primary Action Buttons */}
       <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Generate New Data Button */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             id="btn-generate-new-data"
             onClick={onGenerateNewData}
             disabled={isGenerating}
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all cursor-pointer disabled:opacity-70"
-            title="Randomize and regenerate realistic new data values"
+            title="Randomize and regenerate realistic new data values and practice tasks"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-emerald-400 ${isGenerating ? 'animate-spin' : ''}`} />
-            <span>Generate New Data</span>
+            <span>Generate New Data & Tasks</span>
           </button>
 
+          {seed !== undefined && (
+            <span
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-mono font-medium text-slate-600 bg-slate-100 border border-slate-200 rounded-lg"
+              title="Unique random seed generating this dataset & task batch. Randomizes on every refresh or button click."
+            >
+              <Dices className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Seed: #{seed.toString(36).toUpperCase()}</span>
+            </span>
+          )}
+
           <span className="text-xs text-slate-400 hidden sm:inline">
-            Randomized on every click
+            Randomized on every refresh & click
           </span>
         </div>
 

@@ -87,9 +87,14 @@ export function generateDataset(
 ): {
   primarySheet: TableSheet;
   secondarySheets: TableSheet[];
+  seed: number;
 } {
   const rowCount = getRowCount(size);
-  const rand = createRng(options.seed || Math.floor(Math.random() * 100000));
+  const effectiveSeed =
+    options.seed !== undefined && options.seed > 0
+      ? options.seed
+      : Math.floor(Math.random() * 2147483640) + 1;
+  const rand = createRng(effectiveSeed);
 
   const pick = <T>(arr: T[]): T => arr[Math.floor(rand() * arr.length)];
   const randInt = (min: number, max: number): number => Math.floor(rand() * (max - min + 1)) + min;
@@ -197,6 +202,7 @@ export function generateDataset(
           rows: SALES_REP_TIERS,
         },
       ],
+      seed: effectiveSeed,
     };
   }
 
@@ -277,6 +283,7 @@ export function generateDataset(
         rows: primaryRows,
       },
       secondarySheets: [],
+      seed: effectiveSeed,
     };
   }
 
@@ -378,6 +385,7 @@ export function generateDataset(
           rows: customerMasterRows,
         },
       ],
+      seed: effectiveSeed,
     };
   }
 
@@ -453,6 +461,7 @@ export function generateDataset(
       rows: perfRows,
     },
     secondarySheets: [],
+    seed: effectiveSeed,
   };
 }
 
