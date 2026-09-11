@@ -1,0 +1,6 @@
+{
+  "name": "Excel Practice Data Generator & Guide",
+  "description": "Interactive Microsoft Excel practice dataset generator with realistic mock data, CSV downloads, clipboard export, and step-by-step tutorials for XLOOKUP, Pivot Tables, Power Query, and formulas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
