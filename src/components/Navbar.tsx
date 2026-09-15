@@ -6,6 +6,7 @@ interface NavbarProps {
   currentTopic: PracticeTopic;
   onOpenShortcuts: () => void;
   onOpenImportGuide: () => void;
+  onSwitchToChallenge?: () => void;
 }
 
 const TOPIC_LABELS: Record<PracticeTopic, string> = {
@@ -19,6 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentTopic,
   onOpenShortcuts,
   onOpenImportGuide,
+  onSwitchToChallenge,
 }) => {
   return (
     <header className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-30 shadow-md">
@@ -44,6 +46,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right action items */}
         <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Link to Dashboard Challenge */}
+          {onSwitchToChallenge && (
+            <button
+              onClick={onSwitchToChallenge}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#107C41] hover:bg-[#0d6535] rounded-lg shadow-sm shadow-[#107C41]/30 transition-all cursor-pointer"
+            >
+              <span>🏆 Dashboard Challenge</span>
+            </button>
+          )}
+
           {/* Active Topic Chip on larger screens */}
           <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs text-slate-300">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>

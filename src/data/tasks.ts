@@ -1,4 +1,4 @@
-import { PracticeTask, PracticeTopic, TableSheet } from '../types/excel';
+import { PracticeTask, PracticeTopic, TableSheet, DifficultyLevel } from '../types/excel';
 import { PRODUCT_CATALOG, SALES_REP_TIERS, REGIONS, REPS } from './generators';
 
 export const DEFAULT_PRACTICE_TASKS: Record<PracticeTopic, PracticeTask[]> = {
@@ -423,10 +423,21 @@ export function generatePracticeTasks(
   topic: PracticeTopic,
   primarySheet?: TableSheet | null,
   secondarySheets: TableSheet[] = [],
-  seed?: number
+  seed?: number,
+  difficulty: DifficultyLevel = 'medium'
 ): PracticeTask[] {
   const { pick, pickN, randInt, seed: taskSeed } = createRandomEngine(seed);
   const tag = taskSeed.toString(36).substring(0, 5);
+
+  const filterByDifficulty = (taskList: PracticeTask[]): PracticeTask[] => {
+    if (difficulty === 'easy') {
+      return taskList.slice(0, 3);
+    }
+    if (difficulty === 'medium') {
+      return taskList.slice(0, 4);
+    }
+    return taskList;
+  };
 
   // 1. XLOOKUP / VLOOKUP TASKS
   if (topic === 'xlookup') {
@@ -450,7 +461,7 @@ export function generatePracticeTasks(
     const catalogLength = catalog.length;
     const repsLength = reps.length;
 
-    return [
+    return filterByDifficulty([
       {
         id: `xl-task-1-${tag}`,
         topic: 'xlookup',
@@ -546,7 +557,7 @@ export function generatePracticeTasks(
         expectedResultDescription: `Returns the exact Product ID ("${p2.id}") even though it sits to the left of the search key in the catalog.`,
         proTip: 'Unlike VLOOKUP which breaks whenever someone inserts or deletes a column, XLOOKUP uses direct range references that automatically adjust.',
       },
-    ];
+    ]);
   }
 
   // 2. PIVOT TABLE TASKS
@@ -565,7 +576,7 @@ export function generatePracticeTasks(
     const topEntity = pick(['Best-Selling Products', 'Top Performing Sales Reps']);
     const showAs = pick(['% of Column Total', '% of Grand Total', 'Running Total In Order Date']);
 
-    return [
+    return filterByDifficulty([
       {
         id: `pv-task-1-${tag}`,
         topic: 'pivot',
@@ -662,7 +673,7 @@ export function generatePracticeTasks(
         expectedResultDescription: 'Side-by-side view of absolute values alongside their exact analytical proportion to the whole.',
         proTip: 'You can also select "Running Total In..." to create month-over-month cumulative financial build curves without writing complex formulas.',
       },
-    ];
+    ]);
   }
 
   // 3. POWER QUERY TASKS
@@ -673,7 +684,7 @@ export function generatePracticeTasks(
     const threshold = pick([120000, 150000, 175000, 200000]);
     const joinTarget = pick(['Store Managers Table', 'Regional Distribution Centers', 'District Sales Targets']);
 
-    return [
+    return filterByDifficulty([
       {
         id: `pq-task-1-${tag}`,
         topic: 'power_query',
@@ -769,7 +780,7 @@ export function generatePracticeTasks(
         expectedResultDescription: `The merged query contains store sales enriched with manager/regional fields in a single unified table.`,
         proTip: 'Power Query merges replace dozens of messy VLOOKUP columns with a clean, single-click database join that runs 10x faster on large datasets.',
       },
-    ];
+    ]);
   }
 
   // 4. CONDITIONAL FORMATTING TASKS
@@ -792,7 +803,7 @@ export function generatePracticeTasks(
     { name: `Highlight Top ${pick([3, 5, 10])} Sales with =LARGE()`, formula: `=F2>=LARGE($F$2:$F$51, ${pick([3, 5, 10])})`, desc: 'Highlight the top revenue achievers dynamically across the company using the LARGE function' },
   ]);
 
-  return [
+  return filterByDifficulty([
     {
       id: `cf-task-1-${tag}`,
       topic: 'conditional_formulas',
@@ -889,5 +900,5 @@ export function generatePracticeTasks(
       expectedResultDescription: 'Cells or alternate rows display clean, readable contrast background formatting.',
       proTip: 'Formulas in conditional formatting evaluate dynamically as values change, giving you programmatic control over cell aesthetics.',
     },
-  ];
+  ]);
 }

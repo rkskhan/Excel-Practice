@@ -1,6 +1,6 @@
 {
-  "name": "Excel Practice Data Generator & Guide",
-  "description": "Interactive Microsoft Excel practice dataset generator with realistic mock data, CSV downloads, clipboard export, step-by-step tutorials, and interactive practice tasks & mission checklists for XLOOKUP, Pivot Tables, Power Query, and formulas.",
+  "name": "Excel Business Dashboard Challenge & Practice Data Generator",
+  "description": "Master Business Dashboards and Excel analytics with dynamic realistic practice datasets, 5 PivotTables, interactive charts, formula challenges, and configurable difficulty levels.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

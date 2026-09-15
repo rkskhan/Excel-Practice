@@ -10,14 +10,16 @@ export interface ToastMessage {
 
 interface ToastProps {
   toasts: ToastMessage[];
-  onDismiss: (id: string) => void;
+  onDismiss?: (id: string) => void;
+  onRemove?: (id: string) => void;
 }
 
-export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
+export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss, onRemove }) => {
+  const handleDismiss = onDismiss || onRemove || (() => {});
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-md w-full px-4 sm:px-0">
       {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
+        <ToastItem key={toast.id} toast={toast} onDismiss={handleDismiss} />
       ))}
     </div>
   );

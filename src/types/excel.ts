@@ -2,6 +2,8 @@ export type PracticeTopic = 'xlookup' | 'pivot' | 'power_query' | 'conditional_f
 
 export type DatasetSize = 'small' | 'medium' | 'large';
 
+export type DifficultyLevel = 'easy' | 'medium' | 'hard';
+
 export interface ColumnDef {
   key: string;
   label: string;

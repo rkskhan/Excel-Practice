@@ -5,6 +5,7 @@ import {
   TableSheet,
   ChallengeQuestion,
   PracticeTask,
+  DifficultyLevel,
 } from './types/excel';
 import {
   generateDataset,
@@ -23,6 +24,7 @@ import { TaskSection } from './components/TaskSection';
 import { ShortcutsModal } from './components/ShortcutsModal';
 import { ImportGuideModal } from './components/ImportGuideModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
+import { ExcelDashboardChallengePage } from './components/dashboard-challenge/ExcelDashboardChallengePage';
 import {
   FileSpreadsheet,
   CheckCircle2,
@@ -38,9 +40,13 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  // Primary view mode: 'challenge' (Excel Business Dashboard Challenge) or 'generator' (Dynamic Practice Data Generator)
+  const [viewMode, setViewMode] = useState<'challenge' | 'generator'>('challenge');
+
   // Topic and dataset configuration
   const [topic, setTopic] = useState<PracticeTopic>('xlookup');
   const [size, setSize] = useState<DatasetSize>('medium');
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>('medium');
   const [includeBlanks, setIncludeBlanks] = useState(false);
   const [clearLookupTarget, setClearLookupTarget] = useState(true);
 
@@ -86,32 +92,35 @@ export default function App() {
         includeBlanks,
         clearLookupTarget: topic === 'xlookup' ? clearLookupTarget : false,
         seed: newSeed,
+        difficulty,
       });
 
       setPrimarySheet(dataset.primarySheet);
       setSecondarySheets(dataset.secondarySheets);
       setActiveSheetId(dataset.primarySheet.id);
 
-      // Generate dynamic questions tailored to the new data
+      // Generate dynamic questions tailored to the new data and difficulty
       const newChallenges = generateChallengeQuestions(
         topic,
         dataset.primarySheet,
-        dataset.secondarySheets
+        dataset.secondarySheets,
+        difficulty
       );
       setChallenges(newChallenges);
 
-      // Generate fresh randomized tasks tailored to this specific random batch
+      // Generate fresh randomized tasks tailored to this specific random batch and difficulty
       const newTasks = generatePracticeTasks(
         topic,
         dataset.primarySheet,
         dataset.secondarySheets,
-        newSeed
+        newSeed,
+        difficulty
       );
       setTasks(newTasks);
 
       setIsGenerating(false);
     }, 150);
-  }, [topic, size, includeBlanks, clearLookupTarget]);
+  }, [topic, size, includeBlanks, clearLookupTarget, difficulty]);
 
   // Regenerate tasks only with a new random seed while keeping current dataset
   const handleRandomizeTasksOnly = useCallback(() => {
@@ -122,7 +131,8 @@ export default function App() {
       topic,
       primarySheet,
       secondarySheets,
-      newSeed
+      newSeed,
+      difficulty
     );
     setTasks(newTasks);
     addToast(
@@ -130,7 +140,7 @@ export default function App() {
       '🎲 New Practice Tasks Generated',
       'Loaded brand new business goals, target formulas, and verification steps.'
     );
-  }, [topic, primarySheet, secondarySheets, addToast]);
+  }, [topic, primarySheet, secondarySheets, difficulty, addToast]);
 
   // Regenerate on topic/size/option changes
   useEffect(() => {
@@ -207,6 +217,14 @@ export default function App() {
 
   const currentTutorial = TOPIC_TUTORIALS[topic];
 
+  if (viewMode === 'challenge') {
+    return (
+      <ExcelDashboardChallengePage
+        onSwitchToGenerator={() => setViewMode('generator')}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-900 font-sans flex flex-col antialiased">
       {/* Toast Notifications */}
@@ -217,7 +235,24 @@ export default function App() {
         currentTopic={topic}
         onOpenShortcuts={() => setIsShortcutsOpen(true)}
         onOpenImportGuide={() => setIsImportGuideOpen(true)}
+        onSwitchToChallenge={() => setViewMode('challenge')}
       />
+
+      {/* Switch to Challenge Banner */}
+      <div className="bg-[#107C41] text-white px-4 py-2.5 text-xs shadow-inner">
+        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
+          <span className="flex items-center gap-2 font-medium">
+            <Trophy className="w-4 h-4 text-emerald-200" />
+            <span>Looking for the hands-on project? Build the interactive HR &amp; Sales Dashboard.</span>
+          </span>
+          <button
+            onClick={() => setViewMode('challenge')}
+            className="font-bold underline hover:text-emerald-100 flex items-center gap-1 cursor-pointer transition-colors"
+          >
+            <span>Open Excel Business Dashboard Challenge →</span>
+          </button>
+        </div>
+      </div>
 
       {/* Hero / Context Sub-Header */}
       <div className="bg-slate-900 text-white border-b border-slate-800 py-6 px-4 sm:px-6 lg:px-8">
@@ -251,10 +286,21 @@ export default function App() {
                   #{seed.toString(36).toUpperCase()}
                 </span>
               </div>
-              <div className="text-sm font-bold text-white flex items-center gap-1.5">
+              <div className="text-sm font-bold text-white flex items-center gap-1.5 flex-wrap">
                 <span>{primarySheet ? primarySheet.rows.length : 0} Rows</span>
                 <span className="text-xs text-slate-400 font-normal">
                   • {tasks.length} Tasks
+                </span>
+                <span
+                  className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full border ${
+                    difficulty === 'easy'
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                      : difficulty === 'hard'
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                      : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                  }`}
+                >
+                  {difficulty}
                 </span>
               </div>
             </div>
@@ -279,6 +325,19 @@ export default function App() {
             onSelectTopic={handleSelectTopic}
             size={size}
             onSelectSize={setSize}
+            difficulty={difficulty}
+            onSelectDifficulty={(newDiff) => {
+              setDifficulty(newDiff);
+              addToast(
+                'info',
+                `🎯 Difficulty set to ${newDiff.toUpperCase()}`,
+                newDiff === 'easy'
+                  ? 'Clean, predictable values with beginner-friendly formula challenges.'
+                  : newDiff === 'hard'
+                  ? 'High entropy data, complex edge cases & advanced formula challenges.'
+                  : 'Corporate standard distribution with balanced formula challenges.'
+              );
+            }}
             includeBlanks={includeBlanks}
             onToggleBlanks={setIncludeBlanks}
             clearLookupTarget={clearLookupTarget}
@@ -412,7 +471,15 @@ export default function App() {
               Shortcuts Cheat Sheet
             </button>
             <span>•</span>
-            <span className="text-slate-500">Static Netlify / GitHub Deploy Ready</span>
+            <span className="text-slate-400">
+              Made by <strong className="text-slate-200 font-semibold">Rezaul Karim Sagor</strong>, Email:{' '}
+              <a
+                href="mailto:r.k.s.khan88@gmail.com"
+                className="text-emerald-400 hover:text-emerald-300 transition-colors underline"
+              >
+                r.k.s.khan88@gmail.com
+              </a>
+            </span>
           </div>
         </div>
       </footer>

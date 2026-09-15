@@ -3,6 +3,7 @@ import {
   PracticeTopic,
   DatasetSize,
   TableSheet,
+  DifficultyLevel,
 } from '../types/excel';
 import {
   Search,
@@ -18,6 +19,7 @@ import {
   FileDown,
   Info,
   Dices,
+  Gauge,
 } from 'lucide-react';
 
 interface ControlPanelProps {
@@ -25,6 +27,8 @@ interface ControlPanelProps {
   onSelectTopic: (topic: PracticeTopic) => void;
   size: DatasetSize;
   onSelectSize: (size: DatasetSize) => void;
+  difficulty: DifficultyLevel;
+  onSelectDifficulty: (difficulty: DifficultyLevel) => void;
   includeBlanks: boolean;
   onToggleBlanks: (val: boolean) => void;
   clearLookupTarget: boolean;
@@ -86,11 +90,47 @@ const SIZES: { id: DatasetSize; label: string; rows: string; detail: string }[] 
   { id: 'large', label: 'Large', rows: '~2,000 rows', detail: 'Stress test & deep pivot slicing' },
 ];
 
+const DIFFICULTIES: {
+  id: DifficultyLevel;
+  label: string;
+  badge: string;
+  detail: string;
+  activeClass: string;
+  badgeClass: string;
+}[] = [
+  {
+    id: 'easy',
+    label: 'Easy',
+    badge: 'Beginner',
+    detail: 'Clean round numbers, strict bounds, straightforward formulas',
+    activeClass: 'bg-white text-emerald-950 font-semibold shadow-sm border border-slate-200/60 ring-1 ring-emerald-600/30',
+    badgeClass: 'bg-emerald-100 text-emerald-800',
+  },
+  {
+    id: 'medium',
+    label: 'Medium',
+    badge: 'Corporate Standard',
+    detail: 'Balanced variance, real business edge cases & multi-step calculations',
+    activeClass: 'bg-white text-amber-950 font-semibold shadow-sm border border-slate-200/60 ring-1 ring-amber-600/30',
+    badgeClass: 'bg-amber-100 text-amber-800',
+  },
+  {
+    id: 'hard',
+    label: 'Hard',
+    badge: 'Advanced Analyst',
+    detail: 'Wide outliers, negative variances, complex multi-condition nested tasks',
+    activeClass: 'bg-white text-rose-950 font-semibold shadow-sm border border-slate-200/60 ring-1 ring-rose-600/30',
+    badgeClass: 'bg-rose-100 text-rose-800',
+  },
+];
+
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   topic,
   onSelectTopic,
   size,
   onSelectSize,
+  difficulty,
+  onSelectDifficulty,
   includeBlanks,
   onToggleBlanks,
   clearLookupTarget,
@@ -188,55 +228,116 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       </div>
 
       {/* 2. Dataset Size & Scenario Customization */}
-      <div className="pt-4 border-t border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-        {/* Dataset Size Picker */}
-        <div className="flex-1">
-          <label className="text-xs font-semibold text-slate-700 block mb-2">
-            2. Dataset Size
-          </label>
-          <div className="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/80 w-full sm:w-auto">
-            {SIZES.map((s) => {
-              const isSelected = size === s.id;
-              return (
-                <button
-                  key={s.id}
-                  id={`size-select-${s.id}`}
-                  onClick={() => onSelectSize(s.id)}
-                  className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-white text-emerald-900 font-semibold shadow-sm border border-slate-200/60'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  <span>{s.label}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-md ${
-                      isSelected ? 'bg-emerald-100 text-emerald-800 font-semibold' : 'bg-slate-200/80 text-slate-500'
+      <div className="pt-4 border-t border-slate-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* Dataset Size Picker */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-semibold text-slate-700 block">
+                2. Dataset Size
+              </label>
+              <span className="text-[11px] text-slate-500">
+                Number of data rows
+              </span>
+            </div>
+            <div className="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/80 w-full">
+              {SIZES.map((s) => {
+                const isSelected = size === s.id;
+                return (
+                  <button
+                    key={s.id}
+                    id={`size-select-${s.id}`}
+                    onClick={() => onSelectSize(s.id)}
+                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-white text-emerald-900 font-semibold shadow-sm border border-slate-200/60'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    {s.rows}
-                  </span>
-                </button>
-              );
-            })}
+                    <span>{s.label}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-md ${
+                        isSelected ? 'bg-emerald-100 text-emerald-800 font-semibold' : 'bg-slate-200/80 text-slate-500'
+                      }`}
+                    >
+                      {s.rows}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Difficulty Level Picker */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                <Gauge className="w-3.5 h-3.5 text-slate-500" />
+                <span>3. Difficulty Level</span>
+              </label>
+              <span className="text-[11px] text-slate-500">
+                Data entropy & challenge depth
+              </span>
+            </div>
+            <div className="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/80 w-full">
+              {DIFFICULTIES.map((d) => {
+                const isSelected = difficulty === d.id;
+                return (
+                  <button
+                    key={d.id}
+                    id={`difficulty-select-${d.id}`}
+                    onClick={() => onSelectDifficulty(d.id)}
+                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      isSelected
+                        ? d.activeClass
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                    title={d.detail}
+                  >
+                    <span>{d.label}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold ${
+                        isSelected ? d.badgeClass : 'bg-slate-200/80 text-slate-500'
+                      }`}
+                    >
+                      {d.badge}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        {/* Practice Options Toggles */}
-        <div className="flex flex-wrap items-center gap-4 text-xs">
-          {topic === 'xlookup' && (
-            <>
-              <label className="flex items-center gap-2 text-slate-700 cursor-pointer select-none bg-slate-50 hover:bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200">
-                <input
-                  type="checkbox"
-                  checked={clearLookupTarget}
-                  onChange={(e) => onToggleClearLookup(e.target.checked)}
-                  className="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5"
-                />
-                <span className="font-medium text-slate-800">Leave Unit Price Blank</span>
-                <span className="text-[10px] text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded">Recommended</span>
-              </label>
+        {/* Practice Options Toggles & Difficulty Indicator Strip */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            {topic === 'xlookup' && (
+              <>
+                <label className="flex items-center gap-2 text-slate-700 cursor-pointer select-none bg-slate-50 hover:bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <input
+                    type="checkbox"
+                    checked={clearLookupTarget}
+                    onChange={(e) => onToggleClearLookup(e.target.checked)}
+                    className="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5"
+                  />
+                  <span className="font-medium text-slate-800">Leave Unit Price Blank</span>
+                  <span className="text-[10px] text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded">Recommended</span>
+                </label>
 
+                <label className="flex items-center gap-2 text-slate-700 cursor-pointer select-none bg-slate-50 hover:bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <input
+                    type="checkbox"
+                    checked={includeBlanks}
+                    onChange={(e) => onToggleBlanks(e.target.checked)}
+                    className="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5"
+                  />
+                  <span>Include Unmatched IDs (Practice IFERROR)</span>
+                </label>
+              </>
+            )}
+
+            {topic === 'power_query' && (
               <label className="flex items-center gap-2 text-slate-700 cursor-pointer select-none bg-slate-50 hover:bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200">
                 <input
                   type="checkbox"
@@ -244,36 +345,33 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   onChange={(e) => onToggleBlanks(e.target.checked)}
                   className="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5"
                 />
-                <span>Include Unmatched IDs (Practice IFERROR)</span>
+                <span>Include Messy Whitespace (Practice Trim/Clean)</span>
               </label>
-            </>
-          )}
+            )}
 
-          {topic === 'power_query' && (
-            <label className="flex items-center gap-2 text-slate-700 cursor-pointer select-none bg-slate-50 hover:bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200">
-              <input
-                type="checkbox"
-                checked={includeBlanks}
-                onChange={(e) => onToggleBlanks(e.target.checked)}
-                className="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5"
-              />
-              <span>Include Messy Whitespace (Practice Trim/Clean)</span>
-            </label>
-          )}
+            {topic === 'conditional_formulas' && (
+              <div className="flex items-center gap-1.5 text-slate-500 text-xs bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                <Info className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>Includes calculated quota attainment %, CSAT ratings & overdue tasks.</span>
+              </div>
+            )}
 
-          {topic === 'conditional_formulas' && (
-            <div className="flex items-center gap-1.5 text-slate-500 text-xs bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
-              <Info className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Includes calculated quota attainment %, CSAT ratings & overdue tasks.</span>
-            </div>
-          )}
+            {topic === 'pivot' && (
+              <div className="flex items-center gap-1.5 text-slate-500 text-xs bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                <Info className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>Full 2-year calendar dates, quarters, product hierarchy & profit calculations.</span>
+              </div>
+            )}
+          </div>
 
-          {topic === 'pivot' && (
-            <div className="flex items-center gap-1.5 text-slate-500 text-xs bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
-              <Info className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Full 2-year calendar dates, quarters, product hierarchy & profit calculations.</span>
-            </div>
-          )}
+          <div className="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shrink-0">
+            <span className="font-semibold text-slate-700">Difficulty Impact:</span>
+            <span className="text-slate-600">
+              {difficulty === 'easy' && 'Clean ranges, low variance, beginner formula challenges.'}
+              {difficulty === 'medium' && 'Corporate standard distributions & balanced challenges.'}
+              {difficulty === 'hard' && 'High entropy, outliers & advanced multi-condition formulas.'}
+            </span>
+          </div>
         </div>
       </div>
 
