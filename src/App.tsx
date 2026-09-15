@@ -25,6 +25,7 @@ import { ShortcutsModal } from './components/ShortcutsModal';
 import { ImportGuideModal } from './components/ImportGuideModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { ExcelDashboardChallengePage } from './components/dashboard-challenge/ExcelDashboardChallengePage';
+import { HRExcelHubPage } from './components/hr-excel/HRExcelHubPage';
 import {
   FileSpreadsheet,
   CheckCircle2,
@@ -37,11 +38,12 @@ import {
   ListTodo,
   RefreshCw,
   Dices,
+  Users,
 } from 'lucide-react';
 
 export default function App() {
-  // Primary view mode: 'challenge' (Excel Business Dashboard Challenge) or 'generator' (Dynamic Practice Data Generator)
-  const [viewMode, setViewMode] = useState<'challenge' | 'generator'>('challenge');
+  // Primary view mode: 'generator' (Excel Practice Data Generator & Guide), 'challenge', or 'hr' (Real HR Excel Hub)
+  const [viewMode, setViewMode] = useState<'generator' | 'challenge' | 'hr'>('generator');
 
   // Topic and dataset configuration
   const [topic, setTopic] = useState<PracticeTopic>('xlookup');
@@ -207,11 +209,11 @@ export default function App() {
     }
   };
 
-  // Copy individual formula to clipboard
+  // Copy individual formula to clipboard with visual confirmation toast
   const handleCopyFormula = (formulaCode: string, label: string) => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(formulaCode);
-      addToast('info', `Copied ${label}`, formulaCode);
+      addToast('success', `Formula Copied to Clipboard!`, `${label}: ${formulaCode}`);
     }
   };
 
@@ -221,96 +223,82 @@ export default function App() {
     return (
       <ExcelDashboardChallengePage
         onSwitchToGenerator={() => setViewMode('generator')}
+        onSwitchToHR={() => setViewMode('hr')}
       />
     );
   }
 
+  if (viewMode === 'hr') {
+    return (
+      <>
+        <ToastContainer toasts={toasts} onDismiss={removeToast} />
+        <HRExcelHubPage
+          onSwitchToGenerator={() => setViewMode('generator')}
+          onSwitchToChallenge={() => setViewMode('challenge')}
+          onNotify={addToast}
+        />
+      </>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-900 font-sans flex flex-col antialiased">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex flex-col antialiased transition-colors">
       {/* Toast Notifications */}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
       {/* Top Navigation */}
       <Navbar
         currentTopic={topic}
+        activeView={viewMode}
+        onSelectView={setViewMode}
         onOpenShortcuts={() => setIsShortcutsOpen(true)}
         onOpenImportGuide={() => setIsImportGuideOpen(true)}
-        onSwitchToChallenge={() => setViewMode('challenge')}
       />
 
-      {/* Switch to Challenge Banner */}
-      <div className="bg-[#107C41] text-white px-4 py-2.5 text-xs shadow-inner">
-        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
-          <span className="flex items-center gap-2 font-medium">
-            <Trophy className="w-4 h-4 text-emerald-200" />
-            <span>Looking for the hands-on project? Build the interactive HR &amp; Sales Dashboard.</span>
-          </span>
-          <button
-            onClick={() => setViewMode('challenge')}
-            className="font-bold underline hover:text-emerald-100 flex items-center gap-1 cursor-pointer transition-colors"
-          >
-            <span>Open Excel Business Dashboard Challenge →</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Hero / Context Sub-Header */}
-      <div className="bg-slate-900 text-white border-b border-slate-800 py-6 px-4 sm:px-6 lg:px-8">
+      {/* Clean Minimalist Header */}
+      <div className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 py-6 px-4 sm:px-6 lg:px-8 transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[11px] font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800">
                 Interactive Practice Engine
               </span>
-              <span className="text-slate-400 text-xs hidden sm:inline">
-                • Built for Microsoft Excel 365, 2021, 2019 & Google Sheets
+              <span className="text-slate-400 dark:text-slate-500 text-xs hidden sm:inline">
+                Excel 365, 2021, 2019 &amp; Google Sheets
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Excel Practice Data Generator & Guide
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              Excel Practice Data Generator &amp; Guide
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Generate dynamic, realistic business datasets on demand. Download clean CSVs or copy directly into Excel to practice formulas, pivot tables, data prep, and reporting challenges.
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              Generate dynamic, realistic business datasets on demand. Export clean CSVs or copy directly into Excel to practice formulas, pivot tables, and reporting.
             </p>
           </div>
 
-          {/* Quick Stat Pill */}
-          <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 shrink-0">
-            <div className="w-10 h-10 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold">
-              <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
-            </div>
+          {/* Minimalist Stat Pill */}
+          <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 rounded-xl px-3.5 py-2.5 shrink-0 self-start md:self-auto">
             <div>
-              <div className="text-[11px] text-slate-400 font-medium uppercase tracking-wider flex items-center gap-1.5">
-                <span>Current Random Batch</span>
-                <span className="font-mono text-emerald-400 text-[10px] bg-slate-900/80 px-1.5 py-0.5 rounded border border-slate-700">
+              <div className="text-[10px] text-slate-400 dark:text-slate-400 font-medium uppercase tracking-wider flex items-center gap-1.5">
+                <span>Batch Seed</span>
+                <span className="font-mono text-slate-700 dark:text-slate-300 text-[10px] bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
                   #{seed.toString(36).toUpperCase()}
                 </span>
               </div>
-              <div className="text-sm font-bold text-white flex items-center gap-1.5 flex-wrap">
+              <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mt-0.5">
                 <span>{primarySheet ? primarySheet.rows.length : 0} Rows</span>
-                <span className="text-xs text-slate-400 font-normal">
-                  • {tasks.length} Tasks
-                </span>
-                <span
-                  className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full border ${
-                    difficulty === 'easy'
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                      : difficulty === 'hard'
-                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-                      : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                  }`}
-                >
-                  {difficulty}
-                </span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
+                <span>{tasks.length} Tasks</span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
+                <span className="capitalize text-slate-600 dark:text-slate-400">{difficulty}</span>
               </div>
             </div>
             <button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="ml-1 p-2 bg-slate-700 hover:bg-slate-600 active:scale-95 text-emerald-400 hover:text-emerald-300 rounded-lg transition-all cursor-pointer disabled:opacity-50"
-              title="Generate new randomized data and practice tasks"
+              className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-white dark:hover:bg-slate-700 active:scale-95 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-600 transition-all cursor-pointer disabled:opacity-50"
+              title="Regenerate random dataset & practice tasks"
             >
-              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin' : ''}`} />
             </button>
           </div>
         </div>
@@ -368,48 +356,48 @@ export default function App() {
           />
         )}
 
-        {/* 3. Section Tabs: Tasks vs Tutorial Guide vs. Interactive Challenges */}
-        <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2 flex-wrap gap-2">
-          <div className="flex items-center gap-2 flex-wrap">
+        {/* 3. Minimalist Section Tabs */}
+        <div className="mb-4 flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-2 flex-wrap gap-2">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <button
               onClick={() => setActiveTab('tasks')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 activeTab === 'tasks'
-                  ? 'bg-emerald-700 text-white shadow-sm ring-1 ring-emerald-600'
-                  : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-2xs font-semibold'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
               }`}
             >
-              <CheckSquare className="w-4 h-4" />
-              <span>Practice Tasks & Missions ({tasks.length})</span>
+              <CheckSquare className="w-3.5 h-3.5" />
+              <span>Practice Tasks ({tasks.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab('tutorial')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 activeTab === 'tutorial'
-                  ? 'bg-emerald-700 text-white shadow-sm ring-1 ring-emerald-600'
-                  : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-2xs font-semibold'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
               }`}
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Step-by-Step Procedure & Formulas</span>
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Step-by-Step Procedure</span>
             </button>
 
             <button
               onClick={() => setActiveTab('challenges')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 activeTab === 'challenges'
-                  ? 'bg-amber-600 text-white shadow-sm ring-1 ring-amber-500'
-                  : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                  ? 'bg-slate-900 dark:bg-emerald-600 text-white shadow-2xs font-semibold'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
               }`}
             >
-              <Trophy className="w-4 h-4" />
-              <span>Practice Challenges ({challenges.length})</span>
+              <Trophy className="w-3.5 h-3.5" />
+              <span>Formula Challenges ({challenges.length})</span>
             </button>
           </div>
 
-          <span className="text-xs text-slate-500 hidden sm:inline">
-            Follow the guide, solve in Excel, and test your solution!
+          <span className="text-xs text-slate-400 dark:text-slate-500 hidden sm:inline font-normal">
+            Solve in Excel and verify your outputs
           </span>
         </div>
 
@@ -441,44 +429,45 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 py-8 px-4 sm:px-6 lg:px-8 mt-12">
+      {/* Minimalist Footer */}
+      <footer className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs border-t border-slate-200/80 dark:border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-12 transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
-              <FileSpreadsheet className="w-4 h-4" />
+            <div className="w-6 h-6 rounded-md bg-[#107C41] text-white flex items-center justify-center font-bold">
+              <FileSpreadsheet className="w-3.5 h-3.5" />
             </div>
             <div>
-              <span className="font-bold text-slate-200">Excel Practice Data Generator & Guide</span>
-              <p className="text-[11px] text-slate-500">
-                Created for data analysts, financial modelers, accountants, and spreadsheet learners.
+              <span className="font-semibold text-slate-800 dark:text-slate-200">Excel Practice Data Generator &amp; Guide</span>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                Data modeling, formulas, pivot tables, and spreadsheet mastery.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
             <button
               onClick={() => setIsImportGuideOpen(true)}
-              className="hover:text-emerald-400 transition-colors cursor-pointer"
+              className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer"
             >
               Import Guide
             </button>
-            <span>•</span>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
             <button
               onClick={() => setIsShortcutsOpen(true)}
-              className="hover:text-emerald-400 transition-colors cursor-pointer"
+              className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer"
             >
               Shortcuts Cheat Sheet
             </button>
-            <span>•</span>
-            <span className="text-slate-400">
-              Made by <strong className="text-slate-200 font-semibold">Rezaul Karim Sagor</strong>, Email:{' '}
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <span className="text-slate-500 dark:text-slate-400">
+              Made by <strong className="text-slate-700 dark:text-slate-300 font-medium">Rezaul Karim Sagor</strong> ({' '}
               <a
                 href="mailto:r.k.s.khan88@gmail.com"
-                className="text-emerald-400 hover:text-emerald-300 transition-colors underline"
+                className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors underline"
               >
                 r.k.s.khan88@gmail.com
-              </a>
+              </a>{' '}
+              )
             </span>
           </div>
         </div>

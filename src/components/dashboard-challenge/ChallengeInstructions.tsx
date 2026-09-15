@@ -59,8 +59,14 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
   const handleCopyFormula = (formula: string, label: string) => {
     navigator.clipboard.writeText(formula);
     setCopiedFormula(formula);
-    onToast('success', 'Formula Copied!', `${label}: ${formula}`);
+    onToast('success', 'Formula Copied to Clipboard!', `${label}: ${formula}`);
     setTimeout(() => setCopiedFormula(null), 2000);
+  };
+
+  const extractFormula = (text?: string): string | null => {
+    if (!text) return null;
+    const match = text.match(/(=[A-Za-z0-9_!]+(?:\([^)]*\))?)/);
+    return match ? match[1] : null;
   };
 
   return (
@@ -132,17 +138,17 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#107C41]/15 text-[#107C41]">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#107C41]/15 text-[#107C41] dark:text-emerald-400">
               Curriculum Roadmap
             </span>
-            <span className="text-xs text-slate-400 font-medium">• 5 Guided Milestones</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">• 5 Guided Milestones</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
             Step-by-Step Challenge Instructions
           </h2>
 
-          <p className="text-sm text-slate-600 mt-1 max-w-2xl">
+          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
             Follow this chronological blueprint to transform your raw data into an executive-ready business dashboard. The numbers in the instructions below match the exact figures in your downloaded dataset!
           </p>
         </div>
@@ -151,13 +157,13 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
         <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
           <button
             onClick={handleExpandAll}
-            className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors cursor-pointer"
+            className="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg transition-colors cursor-pointer"
           >
             Expand All
           </button>
           <button
             onClick={handleCollapseAll}
-            className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors cursor-pointer"
+            className="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg transition-colors cursor-pointer"
           >
             Collapse All
           </button>
@@ -177,16 +183,18 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
           return (
             <div
               key={step.id}
-              className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden ${
+              className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-200 overflow-hidden ${
                 isStepComplete
-                  ? 'border-emerald-200 shadow-2xs bg-emerald-50/10'
-                  : 'border-slate-200 shadow-xs hover:border-slate-300'
+                  ? 'border-emerald-200 dark:border-emerald-800/80 shadow-2xs bg-emerald-50/10 dark:bg-emerald-950/20'
+                  : 'border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700'
               }`}
             >
               {/* Step Card Header / Banner */}
               <div
                 className={`p-5 sm:p-6 flex items-start sm:items-center justify-between gap-4 cursor-pointer select-none transition-colors ${
-                  isStepComplete ? 'bg-emerald-50/30' : 'bg-white hover:bg-slate-50/70'
+                  isStepComplete
+                    ? 'bg-emerald-50/30 dark:bg-emerald-950/30'
+                    : 'bg-white dark:bg-slate-900 hover:bg-slate-50/70 dark:hover:bg-slate-800/70'
                 }`}
                 onClick={() => toggleExpand(step.id)}
               >
@@ -201,7 +209,7 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
                     className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 transition-transform active:scale-95 cursor-pointer ${
                       isStepComplete
                         ? 'bg-[#107C41] text-white shadow-sm shadow-[#107C41]/30'
-                        : 'bg-slate-100 text-slate-700 border border-slate-300 hover:border-[#107C41] hover:text-[#107C41]'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-[#107C41] hover:text-[#107C41]'
                     }`}
                     title={isStepComplete ? 'Mark step as incomplete' : 'Mark step as complete'}
                   >
@@ -214,22 +222,22 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
 
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#107C41]">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#107C41] dark:text-emerald-400">
                         Step {step.id}
                       </span>
-                      <span className="text-xs text-slate-400">•</span>
-                      <span className="text-xs text-slate-500 font-medium flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-slate-400" />
+                      <span className="text-xs text-slate-400 dark:text-slate-500">•</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                         {step.timeEstimate}
                       </span>
-                      <span className="text-xs text-slate-400">•</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500">•</span>
                       <span
                         className={`text-[10px] font-semibold px-2 py-0.2 rounded-full ${
                           step.difficulty === 'Beginner'
-                            ? 'bg-slate-100 text-slate-700'
+                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                             : step.difficulty === 'Intermediate'
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200/60'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200/60'
+                            ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800'
+                            : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800'
                         }`}
                       >
                         {step.difficulty}
@@ -238,13 +246,15 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
 
                     <h3
                       className={`text-lg sm:text-xl font-bold tracking-tight mt-0.5 ${
-                        isStepComplete ? 'text-slate-800 line-through decoration-emerald-500/50' : 'text-slate-900'
+                        isStepComplete
+                          ? 'text-slate-800 dark:text-slate-200 line-through decoration-emerald-500/50'
+                          : 'text-slate-900 dark:text-slate-100'
                       }`}
                     >
                       {step.title}
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                       {step.subtitle}
                     </p>
                   </div>
@@ -252,12 +262,12 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
 
                 <div className="flex items-center gap-3 shrink-0">
                   {/* Micro Task Progress Pill */}
-                  <span className="text-xs font-semibold text-slate-500 hidden sm:inline-block px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200/80">
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 hidden sm:inline-block px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
                     {completedTasksInStep}/{step.tasks.length} sub-tasks
                   </span>
 
                   {/* Expand / Collapse Icon */}
-                  <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                     {isExpanded ? (
                       <ChevronUp className="w-4 h-4" />
                     ) : (
@@ -269,15 +279,15 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
 
               {/* Step Expanded Content */}
               {isExpanded && (
-                <div className="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-100">
+                <div className="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800">
                   {/* Overview description */}
-                  <p className="text-sm text-slate-600 leading-relaxed mt-2">
+                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-2">
                     {step.description}
                   </p>
 
                   {/* Formula Snippets (Step 3 or specialized formula steps) */}
                   {step.formulaSnippets && step.formulaSnippets.length > 0 && (
-                    <div className="mt-4 p-4 rounded-xl bg-slate-900 text-slate-100 border border-slate-800">
+                    <div className="mt-4 p-4 rounded-xl bg-slate-900 dark:bg-slate-950 text-slate-100 border border-slate-800 dark:border-slate-800">
                       <div className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
                         <span>Recommended Excel Formulas</span>
@@ -287,7 +297,7 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
                         {step.formulaSnippets.map((item) => (
                           <div
                             key={item.label}
-                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-slate-800/80 border border-slate-700/60"
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-slate-800/80 dark:bg-slate-900 border border-slate-700/60 dark:border-slate-800"
                           >
                             <div>
                               <div className="text-[11px] font-medium text-slate-400">
@@ -323,12 +333,12 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
 
                   {/* Actionable Sub-Tasks Checklist */}
                   <div className="mt-5">
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center justify-between">
+                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <CheckSquare className="w-4 h-4 text-[#107C41]" />
+                        <CheckSquare className="w-4 h-4 text-[#107C41] dark:text-emerald-400" />
                         <span>Action Checklist &amp; Implementation Details</span>
                       </span>
-                      <span className="text-[11px] font-normal text-slate-400">
+                      <span className="text-[11px] font-normal text-slate-400 dark:text-slate-500">
                         Click tasks to check off
                       </span>
                     </div>
@@ -342,31 +352,66 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
                             onClick={() => onToggleTask(task.id)}
                             className={`p-3.5 rounded-xl border transition-all cursor-pointer select-none flex items-start gap-3.5 ${
                               isTaskDone
-                                ? 'bg-emerald-50/40 border-emerald-200/80 text-slate-700'
-                                : 'bg-slate-50/60 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                ? 'bg-emerald-50/40 dark:bg-emerald-950/30 border-emerald-200/80 dark:border-emerald-800 text-slate-700 dark:text-slate-300'
+                                : 'bg-slate-50/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800'
                             }`}
                           >
                             <div className="mt-0.5 shrink-0">
                               {isTaskDone ? (
-                                <CheckCircle2 className="w-4 h-4 text-[#107C41]" />
+                                <CheckCircle2 className="w-4 h-4 text-[#107C41] dark:text-emerald-400" />
                               ) : (
-                                <Circle className="w-4 h-4 text-slate-400" />
+                                <Circle className="w-4 h-4 text-slate-400 dark:text-slate-500" />
                               )}
                             </div>
 
                             <div className="flex-1 min-w-0">
                               <p
                                 className={`text-xs sm:text-sm font-semibold ${
-                                  isTaskDone ? 'text-slate-600 line-through decoration-emerald-600/40' : 'text-slate-900'
+                                  isTaskDone
+                                    ? 'text-slate-600 dark:text-slate-400 line-through decoration-emerald-600/40'
+                                    : 'text-slate-900 dark:text-slate-100'
                                 }`}
                               >
                                 {task.text}
                               </p>
                               {task.detail && (
-                                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                                   {task.detail}
                                 </p>
                               )}
+
+                              {(() => {
+                                const formula = extractFormula(task.detail);
+                                if (!formula) return null;
+                                const isCopied = copiedFormula === formula;
+                                return (
+                                  <div className="mt-2">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCopyFormula(formula, task.text);
+                                      }}
+                                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800/80 shadow-2xs transition-colors cursor-pointer"
+                                      title={`Quick copy formula solution: ${formula}`}
+                                    >
+                                      {isCopied ? (
+                                        <>
+                                          <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                                          <span className="text-emerald-700 dark:text-emerald-400 font-semibold font-sans">
+                                            Copied Formula!
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Copy className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                                          <span>Copy Formula: {formula}</span>
+                                        </>
+                                      )}
+                                    </button>
+                                  </div>
+                                );
+                              })()}
                             </div>
                           </div>
                         );
@@ -377,20 +422,20 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
                   {/* Pro Tip & Keyboard Shortcuts Row */}
                   <div className="mt-5 grid grid-cols-1 md:grid-cols-12 gap-4">
                     {/* Pro Tip Box */}
-                    <div className="md:col-span-8 p-4 rounded-xl bg-emerald-50/60 border border-emerald-200/60">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#107C41] uppercase tracking-wider mb-1">
-                        <Lightbulb className="w-4 h-4 text-[#107C41]" />
+                    <div className="md:col-span-8 p-4 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#107C41] dark:text-emerald-400 uppercase tracking-wider mb-1">
+                        <Lightbulb className="w-4 h-4 text-[#107C41] dark:text-emerald-400" />
                         <span>Executive Pro Tip</span>
                       </div>
-                      <p className="text-xs text-slate-700 leading-relaxed">
+                      <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                         {step.proTip}
                       </p>
                     </div>
 
                     {/* Keyboard Shortcuts Box */}
-                    <div className="md:col-span-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
-                        <Keyboard className="w-3.5 h-3.5 text-slate-500" />
+                    <div className="md:col-span-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-2">
+                        <Keyboard className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                         <span>Key Shortcuts</span>
                       </div>
                       <div className="space-y-1.5">
@@ -399,10 +444,10 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
                             key={sc.key}
                             className="flex items-center justify-between text-xs gap-2"
                           >
-                            <kbd className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 font-mono font-bold text-[10px] shadow-2xs">
+                            <kbd className="px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-mono font-bold text-[10px] shadow-2xs">
                               {sc.key}
                             </kbd>
-                            <span className="text-[11px] text-slate-500 truncate text-right">
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate text-right">
                               {sc.description}
                             </span>
                           </div>
@@ -412,28 +457,28 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
                   </div>
 
                   {/* Expected Result Box */}
-                  <div className="mt-4 p-3 rounded-lg bg-slate-100/70 border border-slate-200/80 flex items-start gap-2.5 text-xs text-slate-600">
-                    <Target className="w-4 h-4 text-[#107C41] shrink-0 mt-0.5" />
+                  <div className="mt-4 p-3 rounded-lg bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300">
+                    <Target className="w-4 h-4 text-[#107C41] dark:text-emerald-400 shrink-0 mt-0.5" />
                     <div>
-                      <strong className="text-slate-800 font-semibold">Verification Criteria: </strong>
+                      <strong className="text-slate-800 dark:text-slate-200 font-semibold">Verification Criteria: </strong>
                       <span>{step.expectedResult}</span>
                     </div>
                   </div>
 
                   {/* Step Completion Toggle Footer */}
-                  <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-3">
+                  <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between flex-wrap gap-3">
                     <button
                       type="button"
                       onClick={() => onToggleStep(step.id)}
                       className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         isStepComplete
-                          ? 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                          ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                           : 'bg-[#107C41] hover:bg-[#0d6535] text-white shadow-sm shadow-[#107C41]/20'
                       }`}
                     >
                       {isStepComplete ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                           <span>Step {step.id} Completed (Click to Undo)</span>
                         </>
                       ) : (
@@ -444,7 +489,7 @@ export const ChallengeInstructions: React.FC<ChallengeInstructionsProps> = ({
                       )}
                     </button>
 
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-slate-400 dark:text-slate-500">
                       {isStepComplete
                         ? 'All requirements satisfied.'
                         : 'Complete all sub-tasks to finish this phase.'}

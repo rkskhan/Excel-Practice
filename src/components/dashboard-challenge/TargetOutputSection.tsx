@@ -92,38 +92,38 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
   };
 
   return (
-    <section id="what-you-will-build" className="py-8 border-t border-slate-200/80">
+    <section id="what-you-will-build" className="py-8 border-t border-slate-200/80 dark:border-slate-800">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#107C41]/15 text-[#107C41]">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#107C41]/15 text-[#107C41] dark:text-emerald-400">
                 Target Output Specification
               </span>
-              <span className="text-xs text-slate-400 font-medium">• Visual Goal &amp; Architecture</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">• Visual Goal &amp; Architecture</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
               What You'll Build
             </h2>
 
-            <p className="text-sm text-slate-600 mt-1 max-w-2xl">
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
               An executive-grade Excel dashboard featuring 3 KPI cards, 5 PivotTables, dynamic charts, and master slicers connected via Report Connections.
             </p>
           </div>
 
           {/* View Switcher: Interactive Simulation vs Screenshot Image Slot */}
-          <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl self-start sm:self-auto border border-slate-200">
+          <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto border border-slate-200 dark:border-slate-700">
             <button
               onClick={() => setViewMode('interactive')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 viewMode === 'interactive'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#107C41]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#107C41] dark:text-emerald-400" />
               <span>Interactive Model</span>
             </button>
 
@@ -131,11 +131,11 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
               onClick={() => setViewMode('customImage')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 viewMode === 'customImage'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
+              <ImageIcon className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
               <span>Screenshot Slot</span>
             </button>
           </div>
@@ -143,7 +143,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
 
         {/* Large Image Placeholder Card (with rounded corners & nice drop shadow) */}
         <div
-          className={`bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xl overflow-hidden transition-all duration-300 ${
+          className={`bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xl overflow-hidden transition-all duration-300 ${
             isFullscreen ? 'fixed inset-4 z-50 overflow-y-auto' : ''
           }`}
         >
@@ -185,53 +185,53 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
           </div>
 
           {/* Excel Ribbon Tabs Simulation */}
-          <div className="bg-slate-100 border-b border-slate-200 px-4 py-1.5 flex items-center gap-4 text-xs text-slate-600 overflow-x-auto select-none">
-            <span className="font-bold text-[#107C41] border-b-2 border-[#107C41] pb-1 px-1">
+          <div className="bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-1.5 flex items-center gap-4 text-xs text-slate-600 dark:text-slate-300 overflow-x-auto select-none">
+            <span className="font-bold text-[#107C41] dark:text-emerald-400 border-b-2 border-[#107C41] dark:border-emerald-400 pb-1 px-1">
               Dashboard (View)
             </span>
-            <span className="hover:text-slate-900 cursor-pointer">File</span>
-            <span className="hover:text-slate-900 cursor-pointer">Home</span>
-            <span className="hover:text-slate-900 cursor-pointer">Insert</span>
-            <span className="hover:text-slate-900 cursor-pointer">Formulas</span>
-            <span className="hover:text-slate-900 cursor-pointer">PivotTable Analyze</span>
-            <span className="hover:text-slate-900 cursor-pointer">Slicer Design</span>
+            <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer">File</span>
+            <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer">Home</span>
+            <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer">Insert</span>
+            <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer">Formulas</span>
+            <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer">PivotTable Analyze</span>
+            <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer">Slicer Design</span>
           </div>
 
           {/* Excel Formula Bar Simulation */}
-          <div className="bg-white border-b border-slate-200 px-4 py-1.5 flex items-center gap-3 text-xs font-mono text-slate-600 select-none">
-            <span className="font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-300">
+          <div className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-700 px-4 py-1.5 flex items-center gap-3 text-xs font-mono text-slate-600 dark:text-slate-300 select-none">
+            <span className="font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700">
               B4
             </span>
-            <span className="text-slate-400 font-sans italic">fx</span>
-            <span className="text-[#107C41] font-semibold truncate">
+            <span className="text-slate-400 dark:text-slate-500 font-sans italic">fx</span>
+            <span className="text-[#107C41] dark:text-emerald-400 font-semibold truncate">
               =Working_Data!C12
             </span>
-            <span className="ml-auto text-[10px] text-slate-400 font-sans hidden sm:inline">
+            <span className="ml-auto text-[10px] text-slate-400 dark:text-slate-500 font-sans hidden sm:inline">
               Gridlines Removed: Alt + W + V + G
             </span>
           </div>
 
           {/* MAIN DASHBOARD CANVAS (Clean White Worksheet without Gridlines) */}
           {viewMode === 'interactive' ? (
-            <div className="p-5 sm:p-7 bg-[#FAFBFB] min-h-[500px]">
+            <div className="p-5 sm:p-7 bg-[#FAFBFB] dark:bg-slate-900/90 min-h-[500px]">
               {/* Dashboard Title & Active Filter Bar */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800 mb-6">
                 <div>
-                  <div className="text-[10px] uppercase font-bold tracking-widest text-[#107C41]">
+                  <div className="text-[10px] uppercase font-bold tracking-widest text-[#107C41] dark:text-emerald-400">
                     Executive Business Intelligence
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
                     HR &amp; Sales Performance Dashboard
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Live interactive model • Click slicers below to see synchronized cross-filtering
                   </p>
                 </div>
 
                 {/* Slicers Active Indicator & Reset */}
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 shadow-2xs flex items-center gap-1.5">
-                    <Filter className="w-3.5 h-3.5 text-[#107C41]" />
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs flex items-center gap-1.5">
+                    <Filter className="w-3.5 h-3.5 text-[#107C41] dark:text-emerald-400" />
                     <span>
                       {selectedRegion === 'All' && selectedDept === 'All'
                         ? 'All Data'
@@ -244,7 +244,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                   {(selectedRegion !== 'All' || selectedDept !== 'All') && (
                     <button
                       onClick={handleResetSlicers}
-                      className="text-xs text-slate-500 hover:text-slate-800 px-2 py-1 rounded bg-slate-200/80 hover:bg-slate-300 transition-colors flex items-center gap-1 cursor-pointer"
+                      className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 px-2 py-1 rounded bg-slate-200/80 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors flex items-center gap-1 cursor-pointer"
                       title="Clear Slicer Filters (Alt + C in Excel)"
                     >
                       <RefreshCw className="w-3 h-3" />
@@ -257,17 +257,17 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
               {/* 1. TOP ROW: 3 EXECUTIVE KPI METRIC CARDS */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {/* KPI 1: Total Employees */}
-                <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-2xs relative overflow-hidden">
+                <div className="bg-white dark:bg-slate-800/90 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-2xs relative overflow-hidden">
                   <div className="h-1 bg-[#107C41] absolute top-0 left-0 right-0" />
-                  <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">
                     <span className="uppercase tracking-wider">Total Headcount</span>
-                    <Users className="w-4 h-4 text-[#107C41]" />
+                    <Users className="w-4 h-4 text-[#107C41] dark:text-emerald-400" />
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black text-slate-900 font-mono tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 font-mono tracking-tight">
                     {totalEmployees.toLocaleString()}
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-                    <span className="text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.2 rounded">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
+                    <span className="text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded">
                       =COUNTA()
                     </span>
                     <span>from tbl_HRSales</span>
@@ -275,35 +275,35 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                 </div>
 
                 {/* KPI 2: Total Revenue */}
-                <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-2xs relative overflow-hidden">
+                <div className="bg-white dark:bg-slate-800/90 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-2xs relative overflow-hidden">
                   <div className="h-1 bg-[#107C41] absolute top-0 left-0 right-0" />
-                  <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">
                     <span className="uppercase tracking-wider">Total Sales Revenue</span>
-                    <DollarSign className="w-4 h-4 text-[#107C41]" />
+                    <DollarSign className="w-4 h-4 text-[#107C41] dark:text-emerald-400" />
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black text-slate-900 font-mono tracking-tight text-[#107C41]">
+                  <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 font-mono tracking-tight text-[#107C41] dark:text-emerald-400">
                     ${(totalRevenue / 1000000).toFixed(1)}M
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-                    <span className="text-slate-700 font-mono">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
+                    <span className="text-slate-700 dark:text-slate-300 font-mono">
                       ${totalRevenue.toLocaleString()}
                     </span>
-                    <span className="text-slate-400">• =SUM()</span>
+                    <span className="text-slate-400 dark:text-slate-500">• =SUM()</span>
                   </div>
                 </div>
 
                 {/* KPI 3: Average Salary */}
-                <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-2xs relative overflow-hidden">
+                <div className="bg-white dark:bg-slate-800/90 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-2xs relative overflow-hidden">
                   <div className="h-1 bg-[#107C41] absolute top-0 left-0 right-0" />
-                  <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-semibold mb-1">
                     <span className="uppercase tracking-wider">Average Base Salary</span>
-                    <TrendingUp className="w-4 h-4 text-[#107C41]" />
+                    <TrendingUp className="w-4 h-4 text-[#107C41] dark:text-emerald-400" />
                   </div>
-                  <div className="text-2xl sm:text-3xl font-black text-slate-900 font-mono tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 font-mono tracking-tight">
                     ${avgSalary.toLocaleString()}
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-                    <span className="text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.2 rounded">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
+                    <span className="text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded">
                       =AVERAGE()
                     </span>
                     <span>across active selection</span>
@@ -316,7 +316,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                 {/* INTERACTIVE SLICER PANEL (Report Connections) */}
                 <div className="lg:col-span-4 space-y-4">
                   {/* Slicer 1: Region Slicer */}
-                  <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-3.5">
+                  <div className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs p-3.5">
                     <div className="bg-[#107C41] text-white px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider mb-2 flex items-center justify-between">
                       <span>Slicer: Region</span>
                       <span className="text-[10px] text-emerald-100 font-normal">
@@ -331,7 +331,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                           className={`px-2.5 py-1.5 rounded text-xs font-semibold transition-all text-left truncate cursor-pointer ${
                             selectedRegion === reg
                               ? 'bg-[#107C41] text-white shadow-2xs ring-1 ring-[#107C41]'
-                              : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+                              : 'bg-slate-50 dark:bg-slate-850 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700'
                           }`}
                         >
                           {reg}
@@ -341,7 +341,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                   </div>
 
                   {/* Slicer 2: Department Slicer */}
-                  <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-3.5">
+                  <div className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs p-3.5">
                     <div className="bg-[#107C41] text-white px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider mb-2 flex items-center justify-between">
                       <span>Slicer: Department</span>
                       <span className="text-[10px] text-emerald-100 font-normal">
@@ -356,7 +356,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                           className={`px-2.5 py-1.5 rounded text-xs font-semibold transition-all text-left truncate cursor-pointer ${
                             selectedDept === dept
                               ? 'bg-[#107C41] text-white shadow-2xs ring-1 ring-[#107C41]'
-                              : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+                              : 'bg-slate-50 dark:bg-slate-850 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700'
                           }`}
                         >
                           {dept}
@@ -366,8 +366,8 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                   </div>
 
                   {/* Pro Slicer Note */}
-                  <div className="p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl text-[11px] text-slate-700">
-                    <strong className="text-[#107C41]">Report Connection Active: </strong>
+                  <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800 rounded-xl text-[11px] text-slate-700 dark:text-slate-300">
+                    <strong className="text-[#107C41] dark:text-emerald-400">Report Connection Active: </strong>
                     Clicking any button updates all 3 charts and 3 KPI tiles in real time, exactly like Excel!
                   </div>
                 </div>
@@ -375,17 +375,17 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                 {/* CHARTS CONTAINER (Column, Donut, and Line) */}
                 <div className="lg:col-span-8 space-y-6">
                   {/* Chart 1: Revenue by Region (Column Chart) */}
-                  <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-4 sm:p-5">
-                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                  <div className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs p-4 sm:p-5">
+                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
                       <div>
-                        <h4 className="text-sm font-bold text-slate-900">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
                           Sales Revenue by Geographic Region
                         </h4>
-                        <p className="text-[11px] text-slate-500">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
                           PivotChart from Pivot 2 (Sum of SalesRevenue)
                         </p>
                       </div>
-                      <span className="text-xs font-mono font-semibold text-[#107C41]">
+                      <span className="text-xs font-mono font-semibold text-[#107C41] dark:text-emerald-400">
                         Clustered Column
                       </span>
                     </div>
@@ -396,14 +396,14 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                         return (
                           <div key={item.region} className="space-y-1">
                             <div className="flex items-center justify-between text-xs">
-                              <span className="font-semibold text-slate-800">
+                              <span className="font-semibold text-slate-800 dark:text-slate-200">
                                 {item.region}
                               </span>
-                              <span className="font-mono font-bold text-slate-900">
+                              <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
                                 ${(item.revenue / 1000000).toFixed(2)}M
                               </span>
                             </div>
-                            <div className="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div className="w-full h-3.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                               <div
                                 className="h-full bg-gradient-to-r from-[#107C41] to-emerald-500 rounded-full transition-all duration-300"
                                 style={{ width: `${pct}%` }}
@@ -418,14 +418,14 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                   {/* Two Column Grid for Donut & Line simulation */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Donut Chart: Headcount by Department */}
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-4">
+                    <div className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-xs font-bold text-slate-900">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
                           Headcount by Department
                         </h4>
-                        <PieChart className="w-3.5 h-3.5 text-[#107C41]" />
+                        <PieChart className="w-3.5 h-3.5 text-[#107C41] dark:text-emerald-400" />
                       </div>
-                      <p className="text-[10px] text-slate-500 mb-3">Pivot 1: Count of EmployeeID</p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-3">Pivot 1: Count of EmployeeID</p>
 
                       <div className="space-y-2">
                         {headcountByDept.slice(0, 5).map((item, idx) => {
@@ -441,9 +441,9 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                             <div key={item.department} className="text-xs flex items-center justify-between">
                               <div className="flex items-center gap-1.5 truncate">
                                 <span className={`w-2 h-2 rounded-full ${colors[idx % colors.length]}`} />
-                                <span className="text-slate-700 truncate">{item.department}</span>
+                                <span className="text-slate-700 dark:text-slate-300 truncate">{item.department}</span>
                               </div>
-                              <span className="font-mono font-semibold text-slate-900">
+                              <span className="font-mono font-semibold text-slate-900 dark:text-slate-100">
                                 {item.count} ({pct}%)
                               </span>
                             </div>
@@ -453,17 +453,17 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                     </div>
 
                     {/* Mini Line Chart: Monthly Revenue Trajectory */}
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-4">
+                    <div className="bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-xs font-bold text-slate-900">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
                           Monthly Sales Trajectory
                         </h4>
-                        <BarChart className="w-3.5 h-3.5 text-[#107C41]" />
+                        <BarChart className="w-3.5 h-3.5 text-[#107C41] dark:text-emerald-400" />
                       </div>
-                      <p className="text-[10px] text-slate-500 mb-3">Pivot 4: Grouped Date Timeline</p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-3">Pivot 4: Grouped Date Timeline</p>
 
                       {/* Sparkline visualization */}
-                      <div className="h-24 flex items-end justify-between gap-1 pt-4 pb-2 border-b border-slate-100">
+                      <div className="h-24 flex items-end justify-between gap-1 pt-4 pb-2 border-b border-slate-100 dark:border-slate-700/60">
                         {[45, 62, 58, 75, 84, 92, 78, 88, 95, 102, 115, 120].map((val, idx) => (
                           <div key={idx} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
                             <div
@@ -471,16 +471,16 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                               style={{ height: `${(val / 120) * 100}%` }}
                               title={`Month ${idx + 1}: $${val * 32}k`}
                             />
-                            <span className="text-[8px] text-slate-400 font-mono">
+                            <span className="text-[8px] text-slate-400 dark:text-slate-500 font-mono">
                               M{idx + 1}
                             </span>
                           </div>
                         ))}
                       </div>
 
-                      <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
+                      <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
                         <span>Q1-Q4 Trajectory</span>
-                        <span className="font-bold text-[#107C41]">+28% Growth YoY</span>
+                        <span className="font-bold text-[#107C41] dark:text-emerald-400">+28% Growth YoY</span>
                       </div>
                     </div>
                   </div>
@@ -489,10 +489,10 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
             </div>
           ) : (
             /* Screenshot Image Placeholder / Custom Upload Slot */
-            <div className="p-8 sm:p-12 bg-slate-50 min-h-[480px] flex flex-col items-center justify-center text-center">
+            <div className="p-8 sm:p-12 bg-slate-50 dark:bg-slate-900 min-h-[480px] flex flex-col items-center justify-center text-center">
               {customImageUrl ? (
                 <div className="max-w-4xl w-full">
-                  <div className="relative group rounded-xl overflow-hidden shadow-lg border border-slate-200">
+                  <div className="relative group rounded-xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-700">
                     <img
                       src={customImageUrl}
                       alt="Completed Excel Business Dashboard"
@@ -519,16 +519,16 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
                   </div>
                 </div>
               ) : (
-                <div className="max-w-md w-full border-2 border-dashed border-slate-300 rounded-2xl p-8 bg-white shadow-xs hover:border-[#107C41] transition-colors">
-                  <div className="w-16 h-16 rounded-2xl bg-[#107C41]/10 text-[#107C41] flex items-center justify-center mx-auto mb-4">
+                <div className="max-w-md w-full border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-8 bg-white dark:bg-slate-800 shadow-xs hover:border-[#107C41] transition-colors">
+                  <div className="w-16 h-16 rounded-2xl bg-[#107C41]/10 dark:bg-emerald-950/40 text-[#107C41] dark:text-emerald-400 flex items-center justify-center mx-auto mb-4">
                     <ImageIcon className="w-8 h-8" />
                   </div>
 
-                  <h4 className="text-base font-bold text-slate-900">
+                  <h4 className="text-base font-bold text-slate-900 dark:text-slate-100">
                     Insert Screenshot of Your Completed Dashboard
                   </h4>
 
-                  <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
                     Upload an image or paste a screenshot of your final green Excel dashboard here.
                   </p>
 
@@ -546,7 +546,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
 
                     <button
                       onClick={() => setViewMode('interactive')}
-                      className="text-xs text-slate-600 hover:text-slate-900 font-medium underline cursor-pointer"
+                      className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium underline cursor-pointer"
                     >
                       Return to Interactive Model Preview
                     </button>
@@ -557,14 +557,14 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
           )}
 
           {/* Worksheet Tab Bar (Dashboard, Working_Data, Raw_HR_Sales_Data) */}
-          <div className="bg-slate-200 border-t border-slate-300 px-4 py-1.5 flex items-center gap-1 text-xs select-none overflow-x-auto">
-            <span className="px-3 py-1 bg-white font-bold text-[#107C41] rounded-t border-t-2 border-[#107C41] shadow-2xs">
+          <div className="bg-slate-200 dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 px-4 py-1.5 flex items-center gap-1 text-xs select-none overflow-x-auto">
+            <span className="px-3 py-1 bg-white dark:bg-slate-900 font-bold text-[#107C41] dark:text-emerald-400 rounded-t border-t-2 border-[#107C41] dark:border-emerald-400 shadow-2xs">
               Dashboard
             </span>
-            <span className="px-3 py-1 text-slate-500 hover:text-slate-800 font-medium">
+            <span className="px-3 py-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-medium">
               Working_Data (Hidden)
             </span>
-            <span className="px-3 py-1 text-slate-500 hover:text-slate-800 font-medium">
+            <span className="px-3 py-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-medium">
               Raw_HR_Sales_Data
             </span>
           </div>
@@ -572,7 +572,7 @@ export const TargetOutputSection: React.FC<TargetOutputSectionProps> = ({ rawDat
 
         {/* Small Caption Required by the User Prompt */}
         <div className="mt-3.5 text-center">
-          <p className="text-xs sm:text-sm text-slate-500 font-medium italic">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium italic">
             "Your final dashboard should look like this and be fully interactive."
           </p>
         </div>

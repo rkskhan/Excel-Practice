@@ -1,6 +1,6 @@
 {
-  "name": "Excel Business Dashboard Challenge & Practice Data Generator",
-  "description": "Master Business Dashboards and Excel analytics with dynamic realistic practice datasets, 5 PivotTables, interactive charts, formula challenges, and configurable difficulty levels.",
+  "name": "Excel Practice Data Generator & Guide",
+  "description": "Generate dynamic, realistic business datasets on demand. Practice XLOOKUP, PivotTables, Power Query, and conditional formatting with interactive tutorials, formula challenges, and step-by-step dashboard guides.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

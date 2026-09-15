@@ -18,6 +18,7 @@ import { TargetOutputSection } from './TargetOutputSection';
 import { CompletionSection } from './CompletionSection';
 import { RawDataPreviewModal } from './RawDataPreviewModal';
 import { ToastContainer, ToastMessage } from '../Toast';
+import { Navbar } from '../Navbar';
 import {
   FileSpreadsheet,
   Award,
@@ -34,10 +35,12 @@ import {
 
 interface ExcelDashboardChallengePageProps {
   onSwitchToGenerator?: () => void;
+  onSwitchToHR?: () => void;
 }
 
 export const ExcelDashboardChallengePage: React.FC<ExcelDashboardChallengePageProps> = ({
-  onSwitchToGenerator
+  onSwitchToGenerator,
+  onSwitchToHR,
 }) => {
   // Fresh random seed generated every time the page loads
   const [seed, setSeed] = useState<number>(() => Math.floor(Math.random() * 2147483640) + 1);
@@ -234,90 +237,63 @@ export const ExcelDashboardChallengePage: React.FC<ExcelDashboardChallengePagePr
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans flex flex-col selection:bg-[#107C41]/20 selection:text-[#107C41]">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex flex-col selection:bg-[#107C41]/20 selection:text-[#107C41] transition-colors">
       {/* Toast Notifications */}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
-      {/* Modern SaaS Learning Platform Top Header (DataCamp / Coursera style) */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Brand & Track Title */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#107C41] text-white flex items-center justify-center font-black shadow-sm shadow-[#107C41]/30">
-              <FileSpreadsheet className="w-5 h-5" />
-            </div>
+      {/* Minimalist Top Navbar */}
+      <Navbar
+        activeView="challenge"
+        onSelectView={(v) => {
+          if (v === 'generator' && onSwitchToGenerator) onSwitchToGenerator();
+          if (v === 'hr' && onSwitchToHR) onSwitchToHR();
+        }}
+        onOpenShortcuts={() => setIsShortcutsOpen(true)}
+        onOpenImportGuide={() => setIsPreviewOpen(true)}
+      />
 
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-extrabold tracking-tight text-slate-900">
-                  DataAnalytics<span className="text-[#107C41]">Lab</span>
-                </span>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#107C41]/10 text-[#107C41] uppercase tracking-wider">
-                  Excel Track
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 hidden md:block">
-                Project Challenge: {scenario.themeTitle}
-              </p>
-            </div>
+      {/* Minimalist Context Sub-bar */}
+      <div className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 lg:px-8 py-2.5 transition-colors">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+              Excel Track
+            </span>
+            <span className="text-xs text-slate-400">•</span>
+            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+              Challenge: {scenario.themeTitle}
+            </span>
           </div>
 
-          {/* Quick Header Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Randomize Quick Trigger in Navbar */}
+          <div className="flex items-center gap-2">
             <button
               id="header-btn-randomize"
               onClick={handleRandomize}
               disabled={isRandomizing}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-amber-900 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
-              title="Generate fresh non-repeating data and random challenge targets"
+              className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-md transition-colors cursor-pointer disabled:opacity-50"
+              title="Generate fresh challenge targets"
             >
-              <Dices className={`w-3.5 h-3.5 text-amber-700 ${isRandomizing ? 'animate-spin' : ''}`} />
-              <span className="hidden md:inline">Randomize Challenge</span>
+              <Dices className={`w-3.5 h-3.5 text-slate-500 dark:text-slate-400 ${isRandomizing ? 'animate-spin' : ''}`} />
+              <span>Randomize Targets</span>
             </button>
 
-            {/* Quick Shortcuts Cheatsheet trigger */}
-            <button
-              onClick={() => setIsShortcutsOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-colors cursor-pointer"
-              title="Excel Keyboard Shortcuts Cheatsheet"
-            >
-              <Keyboard className="w-3.5 h-3.5 text-slate-500" />
-              <span className="hidden sm:inline">Shortcuts</span>
-            </button>
-
-            {/* Quick Raw Data Preview trigger */}
             <button
               onClick={() => setIsPreviewOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-md transition-colors cursor-pointer"
             >
-              <BookOpen className="w-3.5 h-3.5 text-slate-500" />
-              <span className="hidden sm:inline">Inspect Data</span>
-              <span className="sm:hidden">Data</span>
+              <BookOpen className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+              <span>Inspect Data</span>
             </button>
 
-            {/* Switch to Data Generator Tool if available */}
-            {onSwitchToGenerator && (
-              <button
-                onClick={onSwitchToGenerator}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-[#107C41] border border-slate-200 rounded-lg hover:border-[#107C41]/50 transition-colors cursor-pointer"
-                title="Open Dynamic Excel Practice Dataset Generator"
-              >
-                <Layers className="w-3.5 h-3.5 text-[#107C41]" />
-                <span className="hidden md:inline">Data Generator</span>
-              </button>
-            )}
-
-            {/* Quick Download Button in Navbar */}
             <button
               onClick={() => downloadDatasetAsXlsx(rawData, `HR_Sales_Dataset_${scenario.id}`)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-[#107C41] hover:bg-[#0d6535] active:scale-95 rounded-lg shadow-sm shadow-[#107C41]/25 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-white bg-[#107C41] hover:bg-[#0d6535] rounded-md transition-colors cursor-pointer shadow-2xs"
             >
-              <span>Get .xlsx</span>
+              <span>Download .xlsx</span>
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content Sections */}
       <main className="flex-1">
